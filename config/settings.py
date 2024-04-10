@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'me',
+        'NAME': 'streamingApp',
         'USER': 'me',
         'PASSWORD': 'postgres',
-        'HOST': 'app.c5e6ea8wwo84.us-east-2.rds.amazonaws.com',
+        'HOST': 'streaming.c5e6ea8wwo84.us-east-2.rds.amazonaws.com',
         'PORT': '5432',  # default PostgreSQL port
     }
 }
