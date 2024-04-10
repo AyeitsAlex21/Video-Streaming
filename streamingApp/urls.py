@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views.video import *
 
 urlpatterns = [
-    path('', views.home, name="streaming-home"),
+    path('list_videos/', list_videos, name="list-videos-home"),
+    path('get_recommended/', get_recommended, name="get-recommended-videos"),
 ]
