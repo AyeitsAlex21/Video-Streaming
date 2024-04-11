@@ -9,6 +9,11 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 
 import os
 
+from dotenv import load_dotenv
+
+project_folder = os.path.expanduser('~/path/to/your/project')
+load_dotenv(os.path.join(project_folder, '.env'))
+
 from django.core.asgi import get_asgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')

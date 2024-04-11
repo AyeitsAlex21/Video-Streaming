@@ -3,6 +3,12 @@
 import os
 import sys
 
+from dotenv import load_dotenv
+
+project_folder = os.path.expanduser('~/path/to/your/project')
+load_dotenv(os.path.join(project_folder, '.env'))
+
+
 
 def main():
     """Run administrative tasks."""

@@ -9,12 +9,12 @@ const VideoGrid = () => {
   // Fetch videos on component mount
   useEffect(() => {
     const fetchVideos = async () => {
-      const result = await axios(`${process.env.REACT_APP_API_URL}/videos`);
+      const result = await axios(`${process.env.REACT_APP_API_URL}/listVideos`);
       setVideos(result.data);
     };
 
     const fetchRecommended = async () => {
-      const result = await axios(`${process.env.REACT_APP_API_URL}/recommendedVideos`);
+      const result = await axios(`${process.env.REACT_APP_API_URL}/getRecommended`);
       setRecommended(result.data);
     };
 
