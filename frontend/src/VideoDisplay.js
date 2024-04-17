@@ -13,12 +13,12 @@ function VideoDisplay() {
       <h2>{video.name}</h2>
         <video controls
           src={video.video_url}
-          title={video.name}
+          
           allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           allowFullScreen
           poster={video.thumbnail_url}
           className={styles.videoFrame}
-          type='video/mp4'
+          type='video/mov'
         ></video>
       
       <p>{video.description}</p>

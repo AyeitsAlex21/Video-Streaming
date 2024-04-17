@@ -71,7 +71,7 @@ def list_videos(request):
         serializer = VideoSerializer(vidoes, many=True)
 
         for data in serializer.data:
-            data["video_url"] = f'{data["thumbnail_url"][:-13]}video.mp4'
+            data["video_url"] = f'{data["thumbnail_url"][:-13]}video.mov'
 
         return JsonResponse({"data": serializer.data})
 
