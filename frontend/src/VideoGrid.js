@@ -1,6 +1,8 @@
 // src/VideoGrid.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+
+import styles from './VideoGrid.module.css';
+import { Link } from 'react-router-dom';
 
 const VideoGrid = () => {
   const [videos, setVideos] = useState([]);
@@ -9,13 +11,30 @@ const VideoGrid = () => {
   // Fetch videos on component mount
   useEffect(() => {
     const fetchVideos = async () => {
-      const result = await axios(`${process.env.REACT_APP_API_URL}/listVideos`);
-      setVideos(result.data);
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/listVideos/`);
+
+        if (!response.ok) {
+          throw new Error('list videos did not work');
+        }
+        const data = await response.json();
+        setVideos(Object.values(data.data));
+      } catch (error) {
+        console.error('Failed to fetch videos:', error);
+      }
     };
 
     const fetchRecommended = async () => {
-      const result = await axios(`${process.env.REACT_APP_API_URL}/getRecommended`);
-      setRecommended(result.data);
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/getRecommended/`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setRecommended(data.data);
+      } catch (error) {
+        console.error('Failed to fetch recommended videos:', error);
+      }
     };
 
     fetchVideos();
@@ -25,25 +44,26 @@ const VideoGrid = () => {
   return (
     <div>
       <h2>Recommended Videos</h2>
-      <div className="video-grid">
+      <div className={styles.container}>
         {recommended.map((video) => (
-          <div key={video.id} className="video-item">
-            <img src={video.thumbnail} alt={video.name} />
+          <Link to={`/video/${video.name}`} key={video.videoID} className={styles.videoItem} state={{data : video}}>
+            <img src={video.thumbnail_url} alt={video.name} />
             <p>{video.name}</p>
-          </div>
+          </Link>
         ))}
       </div>
 
       <h2>All Videos</h2>
-      <div className="video-grid">
+      <div className={styles.container}>
         {videos.map((video) => (
-          <div key={video.id} className="video-item">
-            <img src={video.thumbnail} alt={video.name} />
-            <p>{video.name}</p>
-          </div>
+          <Link to={`/video/${video.name}`} key={video.videoID} className={styles.videoItem} state={{data : video}}>
+            <img src={video.thumbnail_url} alt={video.name} />
+            <h3>{video.name}</h3>
+          </Link>
         ))}
       </div>
     </div>
+
   );
 };
 

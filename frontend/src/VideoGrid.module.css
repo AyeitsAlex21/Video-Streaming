@@ -1,0 +1,74 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background-color: #f3f4f6; /* A soft off-white background */
+}
+
+.video-item {
+  background-color: #ffffff; /* White background for items */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
+}
+
+.video-item img {
+  width: 100%;
+  display: block; /* Ensures no extra space below image */
+  border-bottom: 4px solid #e07f00; /* Accent color bar at the bottom of the image */
+}
+
+.video-item h3 {
+  margin: 0;
+  padding: 8px 12px;
+  background-color: #333; /* Dark background for title */
+  color: #2631d3; /* White text for title */
+  font-size: 1.2em; /* Slightly larger font size for titles */
+  border-bottom: 1px solid #e07f00; /* Accent color underline */
+}
+
+.video-item p {
+  padding: 8px 12px;
+  margin: 0;
+  color: #333; /* Darker text for better readability */
+  font-size: 0.95em; /* Modestly larger font for body text */
+  line-height: 1.4; /* Improved line spacing for readability */
+  background-color: #fafafa; /* Very light grey for description area */
+  border-bottom-left-radius: 8px; /* Continue the border-radius on the bottom corners */
+  border-bottom-right-radius: 8px;
+}
+
+.video-item a {
+  text-decoration: none; /* No underline on links */
+  color: #e07f00; /* Stylish orange color for text links */
+  transition: color 0.3s ease; /* Smooth transition for link color */
+}
+
+.video-item a:hover {
+  color: #ff5733; /* Brighter shade on hover for contrast */
+}
+
+/* Hover effect for the whole video item */
+.video-item:hover {
+  transform: translateY(-5px); /* Subtle lift effect */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Deeper shadow for lifted effect */
+}
+
+/* Responsive tweaks for better spacing on smaller screens */
+@media (max-width: 600px) {
+  .container {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .video-item {
+    padding: 10px; /* Reduced padding on smaller screens */
+  }
+
+  .video-item h3, .video-item p {
+    padding: 8px; /* Uniform padding for title and description */
+  }
+}
+

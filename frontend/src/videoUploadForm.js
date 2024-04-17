@@ -16,11 +16,48 @@ function VideoUploadForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Here, you'd typically call your backend to get pre-signed URLs for S3 uploads
-    // and then upload the video and thumbnail using those URLs.
-    // Finally, you'd send the metadata (description, resolution, etc.) along with the S3 URLs
-    // of the uploaded files to your backend to store them in your database.
-    console.log("Submit form data here...");
+    console.log("Submitting form data...");
+
+    const formData = new FormData();
+    formData.append('video', video);
+    formData.append('thumbnail', thumbnail);
+    formData.append('description', description);
+    formData.append('resolution', resolution);
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/uploadVideo/`, {
+        method: 'POST',
+        body: formData,  // FormData will be sent as multipart/form-data
+      });
+
+      const data = await response.json();
+
+      if(data.thumbnail && data.video){
+        await fetch(data.video, {
+          method: 'PUT',
+          body: video,
+          headers: {
+            'Content-Type': 'video/mp4',
+          }
+        });
+        console.log('Video uploaded successfully!');
+
+        await fetch(data.thumbnail, {
+          method: 'PUT',
+          body: thumbnail,
+          headers: {
+            'Content-Type': 'video/mp4',
+          }
+        });
+        console.log('Thumbnail uploaded successfully!');
+      }
+
+      console.log(data);
+      alert('Video uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading video:', error);
+      alert('Failed to upload video.');
+    }
   };
 
   return (
