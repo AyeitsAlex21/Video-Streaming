@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 import boto3
+import requests
 
 from ..models.video import Video
 from ..models.resolution import Resolution
@@ -9,7 +10,44 @@ from ..serializers.resolution import ResolutionSerializer
 
 #from ..models.video import Video
 
-# Create your views here
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import openai
+from openai import OpenAI
+import json
+
+# Load your API key securely
+
+@csrf_exempt
+def get_movie_recommendations(request):
+
+    if request.method == 'POST':
+        
+        data = json.loads(request.body)
+        user_input = data["input"]
+
+        try:
+            openai.api_key ='sk-proj-iaaVpteBhDoFrhOYtn5ST3BlbkFJggfbnDKwQ1YCPk29Lfrc'
+            
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "user", "content": user_input}
+                ],
+            )
+
+            print(response)
+
+            chat_response = response.get('choices')[0].get('message', {}).get('content', 'No response generated.')
+
+            return JsonResponse({"response": chat_response}, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    else:
+        return JsonResponse({"error": "This endpoint only supports POST requests."}, status=400)
+
 
 def upload_video(request):
     print(request)

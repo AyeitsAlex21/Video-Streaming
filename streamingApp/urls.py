@@ -6,4 +6,6 @@ urlpatterns = [
     path('getRecommended/', get_recommended, name="get-recommended-videos"),
 
     path('uploadVideo/', upload_video),
+
+    path("get-movie-recommendations/", get_movie_recommendations),
 ]

@@ -19,5 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('', include('streamingApp.urls')), # anytime going /stramingApp/ use the urls from that file
+    path('', include('authentication.urls')),
 ]
