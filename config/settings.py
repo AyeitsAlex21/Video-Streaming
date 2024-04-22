@@ -30,9 +30,10 @@ SECRET_KEY = 'django-insecure-225pe2w(kms@gb#xji^c&1rl@0009uxtfut%w*r!0v87-(l+q(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,6 +83,8 @@ CORS_ALLOW_METHODS = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 * 10
 
 TEMPLATES = [
     {

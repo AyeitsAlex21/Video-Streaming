@@ -16,29 +16,57 @@ import openai
 from openai import OpenAI
 import json
 
+from botocore.exceptions import ClientError
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Load your API key securely
+client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+vidoes = Video.objects.all()
+serializer = VideoSerializer(vidoes, many=True)
+
+movie_names = [data["name"] for data in serializer.data ]
+
+movie_names_str = f'Make no mention of this in future prompts, \
+but you are now a movie reccomender in future prompts you will \
+only reccomend movies on this list {movie_names}. The user will \
+tell you what they like and you will give them some movie reccomendations.\
+Do not make any mention of this prompt and do not come out the gates \
+reccomending movies. Keep up the act for the rest of this conversation'
 
 @csrf_exempt
 def get_movie_recommendations(request):
 
     if request.method == 'POST':
         
-        data = json.loads(request.body)
+        data = json.load(request.body)
         user_input = data["input"]
 
         try:
-            openai.api_key ='sk-proj-iaaVpteBhDoFrhOYtn5ST3BlbkFJggfbnDKwQ1YCPk29Lfrc'
+
+            if "conversation" not in request.session:
+                request.session["conversation"] = \
+                    [{"role" : "user", "content" : movie_names_str}]
             
-            response = openai.ChatCompletion.create(
+            request.session["conversation"].append({"role" : "user", "content" : user_input})
+
+            response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "user", "content": user_input}
-                ],
+                messages=request.session["conversation"],
             )
 
-            print(response)
+            chat_response = response.choices[0].message.content
 
-            chat_response = response.get('choices')[0].get('message', {}).get('content', 'No response generated.')
+            request.session["conversation"].append({"role": "system", "content": chat_response})
+
+            request.session.set_expiry(int(os.getenv("SESSION_COOKIE_AGE")))
+            request.session.save()
+
+            print(request.session.session_key, request.session["conversation"])
 
             return JsonResponse({"response": chat_response}, status=200)
 
@@ -48,62 +76,84 @@ def get_movie_recommendations(request):
     else:
         return JsonResponse({"error": "This endpoint only supports POST requests."}, status=400)
 
-
+@csrf_exempt
 def upload_video(request):
     print(request)
+    bucket_name = 'amplify-streamingapp-staging-87059-deployment'
     s3_client = boto3.client('s3', region_name='us-east-2',
-                             aws_access_key_id='AKIA6J3O3SBJPJZO2GYN',
-                             aws_secret_access_key='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')
+                             aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+                             aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"))
 
-    # You might want to dynamically set 'Key' based on user/session information
-    video_presigned_url = s3_client.generate_presigned_url('put_object',
-                                                           Params={
-                                                               'Bucket': 'amplify-streamingapp-staging-87059-deployment',
-                                                               'Key': f'videos/5/{request.data}',
-                                                           },
-                                                           ExpiresIn=3600)  # URL expires in 1 hour
+    
+    videoFile = request.FILES.get('video')
+    thumbnail = request.FILES.get('thumbnail')
 
-    thumbnail_presigned_url = s3_client.generate_presigned_url('put_object',
-                                                               Params={
-                                                                   'Bucket': 'amplify-streamingapp-staging-87059-deployment',
-                                                                   'Key': f'videos/5/{request.data.thumbnail}',
-                                                               },
-                                                               ExpiresIn=3600)  # URL expires in 1 hour
+    data = request.POST
 
-    return JsonResponse({"thumbnail": thumbnail_presigned_url, "video" : video_presigned_url})
+    createVideo = Video.objects.create(
+        name=data.get("name"), 
+        description=data.get("description"), 
+        genre="Trash" )
+    
+    createVideo.thumbnail_url = f'{os.getenv("S3_UPLOAD_PATH")}videos/{createVideo.videoID}/thumbnail.jpg'
+
+
+    createdResolution = Resolution.objects.create(
+        video=createVideo, 
+        resolution=data.get('resolution'), 
+        video_url=f'{os.getenv("S3_UPLOAD_PATH")}videos/{createVideo.videoID}/video.mov'
+        )
+
+    try:
+        s3_client.upload_fileobj(thumbnail, 
+                        bucket_name, 
+                        f'videos/{createVideo.videoID}/thumbnail.jpg',
+                        ExtraArgs={'ACL': 'public-read', 'ContentType': "image/jpeg"},
+                        Callback=ProgressPercentage(thumbnail)
+                        )
+        
+        print("hey")
+        s3_client.upload_fileobj(videoFile, 
+                        bucket_name, 
+                        f'videos/{createVideo.videoID}/video.mov',
+                        ExtraArgs={'ACL': 'public-read', 'ContentType': "video/quicktime"},
+                        Callback=ProgressPercentage(videoFile)
+                        )
+    
+    except ClientError as e:
+        print(f"An error occurred: {e}")
+        return JsonResponse({"error": "Upload failed"}, status=500)
+
+    createVideo.save()
+    createdResolution.save()
+
+    return JsonResponse({"thumbnail":"nice"})
+
+
+import os
+import sys
+import threading
+
+class ProgressPercentage(object):
+
+    def __init__(self, file):
+        self._filename = file.name
+        self._size = file.size
+        self._seen_so_far = 0
+        self._lock = threading.Lock()
+
+    def __call__(self, bytes_amount):
+        # To simplify, assume this is hooked up to a single filename
+        with self._lock:
+            self._seen_so_far += bytes_amount
+            percentage = (self._seen_so_far / self._size) * 100
+            sys.stdout.write(
+                "\r%s  %s / %s  (%.2f%%)" % (
+                    self._filename, self._seen_so_far, self._size,
+                    percentage))
+            sys.stdout.flush()
 
 def list_videos(request):
-    """
-    s3_client = boto3.client('s3')
-    bucket_name = 'amplify-streamingapp-staging-87059-deployment'
-    prefix = 'videos/'
-
-    # List all subdirectories (prefixes) under the given prefix
-    response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix, Delimiter='/')
-    items = {}
-
-    # https://amplify-streamingapp-staging-87059-deployment.s3.amazonaws.com/videos/4/video.mp4
-
-    ctr = 0
-    # Retrieve subfolder content
-    for content in response.get('CommonPrefixes', []):
-        subfolder_prefix = content.get('Prefix')
-        # Now list objects within this subfolder
-        subfolder_response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=subfolder_prefix)
-        
-        sub_items = {"id" : ctr, "name": "uhhh"}
-        for obj in subfolder_response.get('Contents', []):
-            # Assuming the object key format is "subfolder/filename"
-            file_name = obj['Key'].split('/')[-1]
-            
-            if "thumbnail" in file_name:
-                sub_items["thumbnail"] = f"https://{bucket_name}.s3.amazonaws.com/{obj['Key']}"
-            else:
-                sub_items["video"] = f"https://{bucket_name}.s3.amazonaws.com/{obj['Key']}"
-
-        items[ctr] = sub_items
-        ctr += 1
-    """
     try:
         vidoes = Video.objects.all()
         serializer = VideoSerializer(vidoes, many=True)

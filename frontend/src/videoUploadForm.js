@@ -5,6 +5,7 @@ function VideoUploadForm() {
   const [thumbnail, setThumbnail] = useState(null);
   const [description, setDescription] = useState('');
   const [resolution, setResolution] = useState('');
+  const [name, setName] = useState('');
 
   const handleVideoChange = (event) => {
     setVideo(event.target.files[0]);
@@ -23,6 +24,7 @@ function VideoUploadForm() {
     formData.append('thumbnail', thumbnail);
     formData.append('description', description);
     formData.append('resolution', resolution);
+    formData.append('name', name);
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/uploadVideo/`, {
@@ -35,21 +37,18 @@ function VideoUploadForm() {
       if(data.thumbnail && data.video){
         await fetch(data.video, {
           method: 'PUT',
-          body: video,
+          body: {
+            video: video, 
+            thumbnail: thumbnail,
+            description: description,
+            resolution: resolution,
+            name: name,
+          },
           headers: {
-            'Content-Type': 'video/mp4',
+            'Content-Type': 'video/mov',
           }
         });
-        console.log('Video uploaded successfully!');
-
-        await fetch(data.thumbnail, {
-          method: 'PUT',
-          body: thumbnail,
-          headers: {
-            'Content-Type': 'video/mp4',
-          }
-        });
-        console.log('Thumbnail uploaded successfully!');
+        console.log('Video and thumbnail uploaded successfully!');
       }
 
       console.log(data);
@@ -64,15 +63,19 @@ function VideoUploadForm() {
     <form onSubmit={handleSubmit}>
       <div>
         <label>Video file:</label>
-        <input type="file" accept="video/*" onChange={handleVideoChange} required />
+        <input type="file" accept="video/mov" onChange={handleVideoChange} required />
       </div>
       <div>
         <label>Thumbnail image:</label>
-        <input type="file" accept="image/*" onChange={handleThumbnailChange} required />
+        <input type="file" accept="image/jpg" onChange={handleThumbnailChange} required />
       </div>
       <div>
         <label>Description:</label>
         <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+      </div>
+      <div>
+        <label>Name:</label>
+        <textarea value={name} onChange={(e) => setName(e.target.value)} required />
       </div>
       <div>
         <label>Resolution:</label>

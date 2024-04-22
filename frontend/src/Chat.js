@@ -18,7 +18,11 @@ function ChatComponent() {
     const newMessage = { text: input, author: 'user' };
     setMessages([...messages, newMessage]);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/get-movie-recommendations/`, {input: input});
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/get-movie-recommendations/`, {
+            input: input
+        }, {
+            withCredentials: true  
+        });
       const botMessage = { text: response.data.response, author: 'bot' };
       setMessages(messages => [...messages, botMessage]);
     } catch (error) {
@@ -32,6 +36,9 @@ function ChatComponent() {
     <div className="chat-container">
       <h2>Movie Recommendations Chat</h2>
       <div className="chat-box">
+        <div key={-1} className={`message ${'bot'}`}>
+            <span className={`message-text ${'bot'}`}>{"Hello! Please tell me what you like so I can recommend you a movie!"}</span>
+        </div>
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.author}`}>
             <span className={`message-text ${msg.author}`}>{msg.text}</span>

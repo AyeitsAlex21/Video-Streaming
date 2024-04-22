@@ -72,3 +72,24 @@
   }
 }
 
+.searchContainer {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.searchInput {
+  width: 80%;  
+  padding: 10px 15px;
+  font-size: 16px; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.searchInput:focus {
+  border-color: #0056b3; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
+  outline: none; 
+}
