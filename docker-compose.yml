@@ -2,22 +2,26 @@ version: '3.8'
 
 services:
   frontend:
-    build: ./path/to/react/app
+    build: 
+      context: ./
+      dockerfile: Dockerfile 
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/Dockerfile
+      - ./path/to/react/app:/app
     depends_on:
       - backend
     environment:
       - REACT_APP_API_URL=http://backend:8000
 
   backend:
-    build: ./path/to/django/app
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile 
     ports:
       - "8000:8000"
     volumes:
-      - ./Dockerfile
+      - ./path/to/django/app:/app
     environment:
       - DEBUG=1 
       - OPENAI_API_KEY=sk-proj-kf9nftz50HnSK6wPvwqXT3BlbkFJlBxdnMQlNwTaHittLElR
