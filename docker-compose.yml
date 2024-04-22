@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./path/to/react/app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./path/to/react/app:/app
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://backend:8000
+
+  backend:
+    build: ./path/to/django/app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./path/to/django/app:/app
+    environment:
+      - DEBUG=1 
+      - OPENAI_API_KEY=sk-proj-kf9nftz50HnSK6wPvwqXT3BlbkFJlBxdnMQlNwTaHittLElR
+      - AWS_ACCESS_KEY_ID=AKIA6J3O3SBJPJZO2GYN
+      - AWS_SECRET_ACCESS_KEY=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
+      - SESSION_COOKIE_AGE=5000
+      - DEBUG=True
+      - S3_UPLOAD_PATH=https://amplify-streamingapp-staging-87059-deployment.s3.amazonaws.com/
