@@ -15,6 +15,7 @@ function SignIn() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const url = `${process.env.REACT_APP_API_URL}/signin/`;
+    console.log(url)
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
