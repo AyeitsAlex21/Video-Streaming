@@ -43,7 +43,7 @@ def get_movie_recommendations(request):
 
     if request.method == 'POST':
         
-        data = json.load(request.body)
+        data = json.loads(request.body)
         user_input = data["input"]
 
         try:
