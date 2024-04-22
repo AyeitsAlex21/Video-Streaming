@@ -1,7 +1,7 @@
-# Dockerfile for React frontend
+# Dockerfile for React frontend using Nginx
 
-# Use an official Node runtime as a parent image
-FROM node:14
+# Use an official Node runtime as a parent image to build the React app
+FROM node:14 as builder
 
 # Set the working directory
 WORKDIR /app
@@ -18,11 +18,17 @@ COPY . .
 # Build the app
 RUN npm run build
 
-# Install serve to run the app
-RUN npm install -g serve
+# Use nginx to serve the static content
+FROM nginx:stable-alpine
 
-# Command to serve the app on port 3000
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Copy the build output to replace the default nginx contents
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# Expose port 3000 to be accessible externally
-EXPOSE 3000
+# Optional: Copy a custom nginx config if you have one
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80 to be accessible externally
+EXPOSE 80
+
+# Start nginx and keep the process from backgrounding and the container from quitting
+CMD ["nginx", "-g", "daemon off;"]
