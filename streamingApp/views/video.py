@@ -43,7 +43,11 @@ def get_movie_recommendations(request):
 
     if request.method == 'POST':
         
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError as e:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
         user_input = data["input"]
 
         try:
