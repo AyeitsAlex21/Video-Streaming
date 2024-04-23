@@ -49,6 +49,7 @@ def get_movie_recommendations(request):
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
         user_input = data["input"]
+        print("got past user_input")
 
         try:
 
