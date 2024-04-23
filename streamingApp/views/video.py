@@ -56,13 +56,16 @@ def get_movie_recommendations(request):
                 request.session["conversation"] = \
                     [{"role" : "user", "content" : movie_names_str}]
             
-            print("got past convo")
+            
             request.session["conversation"].append({"role" : "user", "content" : user_input})
 
+            print(os.getenv("OPENAI_API_KEY"), os.getenv("SESSION_COOKIE_AGE"))
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=request.session["conversation"],
             )
+            
+            print("got past response")
 
             chat_response = response.choices[0].message.content
 
