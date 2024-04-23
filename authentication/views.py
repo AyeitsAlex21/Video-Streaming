@@ -31,11 +31,11 @@ def signup(request):
         
         if User.objects.filter(username=username).exists():
             print("username exists")
-            return HttpResponse(status=406)
+            return JsonResponse(status=406)
         
         if User.objects.filter(email=email).exists():
             print("email exists")
-            return HttpResponse(status=406)
+            return JsonResponse(status=406)
         
         myuser = User.objects.create_user(username, email, pass1)
         myuser.first_name = fname
@@ -43,9 +43,9 @@ def signup(request):
         myuser.is_active = True
         myuser.save()
         
-        return HttpResponse(status=201)
+        return JsonResponse(status=201, data={email:email})
     
-    return HttpResponse(status=404)
+    return JsonResponse(status=404)
 
 @csrf_exempt
 def signin(request):
