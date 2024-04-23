@@ -49,7 +49,6 @@ def get_movie_recommendations(request):
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
         user_input = data["input"]
-        print("got past user_input")
 
         try:
 
@@ -57,6 +56,7 @@ def get_movie_recommendations(request):
                 request.session["conversation"] = \
                     [{"role" : "user", "content" : movie_names_str}]
             
+            print("got past convo")
             request.session["conversation"].append({"role" : "user", "content" : user_input})
 
             response = client.chat.completions.create(
