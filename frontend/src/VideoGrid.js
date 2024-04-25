@@ -35,6 +35,7 @@ const VideoGrid = () => {
       <Link to={`/information`} >
         <h1>About Page</h1>
       </Link>
+      
       <ChatComponent></ChatComponent>
       <h2>All Videos</h2>
       <div className={styles.searchContainer}>
