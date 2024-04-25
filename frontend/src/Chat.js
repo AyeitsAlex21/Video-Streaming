@@ -37,7 +37,7 @@ function ChatComponent() {
       <h2>Movie Recommendations Chat</h2>
       <div className="chat-box">
         <div key={-1} className={`message ${'bot'}`}>
-            <span className={`message-text ${'bot'}`}>{"Hello! Please tell me what you like so I can recommend you a movie!"}</span>
+            <span className={`message-text ${'bot'}`}>{"Hello! Please tell me what you like so I can recommend a movie to you!"}</span>
         </div>
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.author}`}>
