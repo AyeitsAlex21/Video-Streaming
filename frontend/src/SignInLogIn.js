@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SignUp from './authentication/SignUp';
 import SignIn from './authentication/SignIn';
+import "./css/SignInLogIn.css"
 
 function SignInLogIn() {
   const [view, setView] = useState('signup'); // 'signup' or 'login'

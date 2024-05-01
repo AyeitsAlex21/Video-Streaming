@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import './Chat.css';
+import './css/Chat.css';
 
 function ChatComponent() {
   const [input, setInput] = useState('');
