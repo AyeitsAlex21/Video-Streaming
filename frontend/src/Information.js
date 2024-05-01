@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import "./css/Information.css"
 
 function Information() {
 
     return (
         
-        <div>
+        <div class="infoPage">
             <h1>About Page</h1>
 
             <p>
