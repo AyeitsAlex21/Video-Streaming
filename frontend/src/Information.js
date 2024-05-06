@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import "./css/Information.css"
+import NavBar from './NavBar';
 
 function Information() {
 
     return (
         
         <div class="infoPage">
+            <NavBar></NavBar>
             <h1>About Page</h1>
 
             <p>

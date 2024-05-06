@@ -1,0 +1,40 @@
+/* Navigation bar styling */
+.navbar {
+    display: flex;
+    justify-content: center; /* Centers the navigation items horizontally */
+    list-style-type: none; /* Removes default list styling */
+    margin: 0;
+    padding: 0;
+    background-color: #2c3e50; /* Dark shade of blue */
+}
+
+.navbar li {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: black;
+}
+
+.navbar li a {
+    text-decoration: none; 
+    color: white;
+    font-weight: bold; 
+    font-size: 16px; 
+    transition: color 0.3s;
+}
+
+.navbar li a:hover, .navbar li a:focus {
+    color: #00a2ff; 
+    background-color: #021930; 
+}
+
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }
+
+    .navbar li {
+        text-align: center; 
+        width: 100%;
+    }
+}

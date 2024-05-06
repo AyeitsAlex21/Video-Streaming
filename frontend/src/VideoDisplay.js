@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import styles from './VideoDisplay.module.css'; // Your CSS module for this component
+import styles from './VideoDisplay.module.css'; 
+import NavBar from './NavBar';
 
 function VideoDisplay() {
   const location = useLocation();
@@ -10,6 +11,7 @@ function VideoDisplay() {
   console.log(video.video_url)
   return (
     <div className={styles.videoDisplayContainer}>
+      <NavBar />
       <h2>{video.name}</h2>
         <video controls
           src={video.video_url}

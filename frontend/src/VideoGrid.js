@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './VideoGrid.module.css';
 import { Link } from 'react-router-dom';
 import ChatComponent from './Chat';
+import NavBar from './NavBar';
 
 const VideoGrid = () => {
   const [videos, setVideos] = useState([]);
@@ -32,9 +33,7 @@ const VideoGrid = () => {
 
   return (
     <div>
-      <Link to={`/information`} >
-        <h1>About Page</h1>
-      </Link>
+      <NavBar />
       
       <ChatComponent></ChatComponent>
       <h2>All Videos</h2>

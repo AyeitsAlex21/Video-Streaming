@@ -11,7 +11,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="" element={<SignInLogIn />} />
+        <Route path="/" element={<SignInLogIn />} />
         <Route path="/home" element={<VideoGrid />} />
         <Route path="/upload" element={<VideoUploadForm />} />
         <Route path="/video/:videoID" element={<VideoDisplay />} />
