@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 import boto3
 import requests
+import random
 
 from ..models.video import Video
 from ..models.resolution import Resolution
@@ -20,6 +21,8 @@ from botocore.exceptions import ClientError
 
 import os
 from dotenv import load_dotenv
+
+from ..utils.mongo_util import get_database
 
 load_dotenv()
 
@@ -163,13 +166,22 @@ class ProgressPercentage(object):
 
 def list_videos(request):
     try:
+        
         vidoes = Video.objects.all()
         serializer = VideoSerializer(vidoes, many=True)
 
         for data in serializer.data:
             data["video_url"] = f'{data["thumbnail_url"][:-13]}video.mov'
 
-        return JsonResponse({"data": serializer.data})
+        if random.random() < 0.5:
+            print("postgres list vids")
+            return JsonResponse({"data": serializer.data})
+        else:
+            mongo_db = get_database()
+            documents = list(mongo_db.Videos.find({}))
+            print("MongoDB list vids")
+
+            return JsonResponse({"data": documents})
 
     except Video.DoesNotExist:
         return JsonResponse({'message': 'The video does not exist'}, status=404)

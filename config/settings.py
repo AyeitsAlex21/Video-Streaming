@@ -125,6 +125,13 @@ DATABASES = {
     }
 }
 
+MONGO_DATABASES = {
+    'default': {
+        'NAME': 'StreamingApp',
+        'CLIENT': 'mongodb+srv://alexsummees1821:Alex2118@streamingapp.mpjuoxf.mongodb.net/?retryWrites=true&w=majority&appName=StreamingApp'
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
