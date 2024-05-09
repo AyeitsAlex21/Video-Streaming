@@ -36,7 +36,6 @@ function Information() {
                     <li>Route 53</li>
                     <li>EC2</li>
                     <li>CloudFront</li>
-                    <li>DocumentDB</li>
                 </ul>
 
                 <h3>Frontend/Backend Frameworks</h3>
