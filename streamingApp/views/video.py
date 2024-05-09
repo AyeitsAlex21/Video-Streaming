@@ -179,6 +179,9 @@ def list_videos(request):
         else:
             mongo_db = get_database()
             documents = list(mongo_db.Videos.find({}))
+            for doc in documents:
+                del doc["_id"]
+                
             print("MongoDB list vids")
 
             return JsonResponse({"data": documents})
